@@ -11,46 +11,20 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:*
+        - sns:SetSMSAttributes
+        - sns:Publish
       Resource: '*'
 
 custom:
   tableName: myDynamoDBTable 
 
 functions:
-  webSocketconnect:
-    handler: lambdas/websocktes/connect.handler
+  sendSMS:
+    handler: lambdas/endpoints/sendSMS.handler
     events:
-      - websocket:
-          route: $connect
-  webSocketdisconnect:
-    handler: lambdas/websocktes/disconnect.handler
-    events:
-      - websocket:
-          route: $disconnect
-  webSocketdefault:
-    handler: lambdas/websocktes/default.handler
-    events:
-      - websocket:
-          route: $default
-  webSocketmessage:
-    handler: lambdas/websocktes/message.handler
-    events:
-      - websocket:
-          route: message
-
-resources:
-  Resources:
-    webSocketUserTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.tableName}
-        AttributeDefinitions:
-          - AttributeName: ID
-            AttributeType: S
-        KeySchema:
-          - AttributeName: ID
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
+      - http:
+          path: send-sms
+          method: POST
+          cors: true
       
      
