@@ -11,6 +11,7 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
+        - ses:*
         - comprehend:*
       Resource: '*'
 
@@ -18,13 +19,14 @@ custom:
   tableName: myDynamoDBTable 
 
 functions:
-  analyse:
-    handler: lambdas/endpoints/analyse.handler
+  sendReminder:
+    handler: lambdas/scheduleTasks/reminderEmail.handler
     events:
-      - http:
-          path: analyse/{id}
-          method: POST
-          cors: true
+      - schedule: cron(0 9 ? * 7 *)
+  sendMorningNews:
+    handler: lambdas/scheduleTasks/morningNew.handler
+    events:
+      - schedule: cron(15 7 ? * * *)
       
       
      
