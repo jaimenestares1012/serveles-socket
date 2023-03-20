@@ -11,20 +11,20 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - sns:SetSMSAttributes
-        - sns:Publish
+        - comprehend:*
       Resource: '*'
 
 custom:
   tableName: myDynamoDBTable 
 
 functions:
-  sendSMS:
-    handler: lambdas/endpoints/sendSMS.handler
+  analyse:
+    handler: lambdas/endpoints/analyse.handler
     events:
       - http:
-          path: send-sms
+          path: analyse/{id}
           method: POST
           cors: true
+      
       
      
