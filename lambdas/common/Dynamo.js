@@ -12,8 +12,7 @@ const Dynamo = {
         if (!data || !data.Item ) {
             throw Error(`There was an error fetching the data for id ${ID} from ${TableName}`)
         }
-        console.log("DATA--->", data);
-        return data
+        return data.Item
     },  
     async write(data, TableName) {
         if (!data.ID) {
