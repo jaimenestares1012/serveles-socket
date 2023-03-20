@@ -14,23 +14,26 @@ const Dynamo = {
         }
         console.log("DATA--->", data);
         return data
-    },
-    async write (data, TableName){
-        if (!data) {
-            throw Error('No id en la data')
+    },  
+    async write(data, TableName) {
+        if (!data.ID) {
+            throw Error('no ID on the data');
         }
-        const params= {
+
+        const params = {
             TableName,
-            Item: data
-        }
-        const res =  await documentClient.put(params).promise()
+            Item: data,
+        };
+
+        const res = await documentClient.put(params).promise();
 
         if (!res) {
-            throw Error(`There was an error inserting the data for id ${data.ID} from ${TableName}`)
+            throw Error(`There was an error inserting ID of ${data.ID} in table ${TableName}`);
         }
 
-        return data
+        return data;
     },
+
     async delete (ID, TableName){
         const params = {
             TableName,

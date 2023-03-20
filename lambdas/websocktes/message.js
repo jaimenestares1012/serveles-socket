@@ -13,10 +13,11 @@ exports.handler =  async event =>{
         console.log("<----------->");
         const record = await Dynamo.get(connectionID, tableName)
         console.log("Record---- > ", record);
-        const messages = record.messages
+        const messages = record.messages || []; // si record.messages no está definido, inicializa messages como un arreglo vacío
         console.log("messages----> ", messages);
+        console.log("body.messagebody.message--body.message", body.message);
         messages.push(body.message)
-        console.log("messages---->", messages);
+        console.log("messages2 ---->", messages);
         const data = {
             ...record,
             messages
