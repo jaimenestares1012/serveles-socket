@@ -39,7 +39,7 @@ const validateEventBody = async state =>{
     } catch (error) {
         console.log("ERROR, ", error);
         state.exit = true
-        state.respomse = {statusCode: 400, body: JSON.stringify({error: error.message})}
+        state.response = {statusCode: 400, body: JSON.stringify({error: error.message})}
     }
     return state
 }
@@ -57,7 +57,7 @@ const validatePath = async state =>{
     } catch (error) {
         console.log("ERROR,  path paramteres", error);
         state.exit = true
-        state.respomse = {statusCode: 400, body: JSON.stringify({error: error.message})}
+        state.response = {statusCode: 400, body: JSON.stringify({error: error.message})}
     }
     return state
 }
