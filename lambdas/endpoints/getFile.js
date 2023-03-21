@@ -2,7 +2,9 @@ const Responses = require('../common/API_Responses')
 const S3 = require('../common/S3')
 const bucket = process.env.bucketName
 
-exports.handler = async event =>{
+const { withHooks } = require('../common/hooks')
+
+const handler = async event =>{
     console.log("EVENTE", event);
     if (!event.pathParameters || ! event.pathParameters.fileName) {
         return Responses._400({message:"missing file the id"})
@@ -21,3 +23,5 @@ exports.handler = async event =>{
     return Responses._200({file})
 
 }
+
+exports.handler = withHooks(handler)
