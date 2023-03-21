@@ -12,7 +12,7 @@ plugins:
 
 custom:
   bucketName: ja-my-serverless-react-app-20-03-2023
-  s3sync:
+  s3Sync:
     - bucketName: ${self:custom.bucketName}
       localDir: demo-app/build/
 
@@ -38,14 +38,14 @@ resources:
               Principal: '*'
               Action:
                 - s3:GetObject
-              Resource: arn:aws:s3:::${self:custom.bucketName}
+              Resource: arn:aws:s3:::${self:custom.bucketName}/*
       
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
           Origins:
-            - DomainName: ${custom:self.bucketName}.s3.amazonaws.com
+            - DomainName: ${self:custom.bucketName}.s3.amazonaws.com
               Id: ReactApp
               CustomOriginConfig:
                   HTTPPort: 80
@@ -64,6 +64,7 @@ resources:
               - HEAD
               - OPTIONS
               - PATCH
+              - POST
               - PUT
             TargetOriginId: ReactApp
             ForwardedValues:
@@ -73,11 +74,4 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
             CloudFrontDefaultCertificate: true
-      
-          
 
-
-  
-      
-      
-     
