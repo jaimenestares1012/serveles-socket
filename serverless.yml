@@ -6,27 +6,78 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs12.x
-  environment:
-    tableName: ${self:custom.tableName}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - ses:*
-        - comprehend:*
-      Resource: '*'
+
+plugins:
+  - serverless-s3-sync
 
 custom:
-  tableName: myDynamoDBTable 
+  bucketName: ja-my-serverless-react-app-20-03-2023
+  s3sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: demo-app/build/
 
-functions:
-  sendReminder:
-    handler: lambdas/scheduleTasks/reminderEmail.handler
-    events:
-      - schedule: cron(0 9 ? * 7 *)
-  sendMorningNews:
-    handler: lambdas/scheduleTasks/morningNew.handler
-    events:
-      - schedule: cron(15 7 ? * * *)
+resources:
+  Resources:
+    ReactAppBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    S3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: 
+          Ref: ReactAppBucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::${self:custom.bucketName}
+      
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: ${custom:self.bucketName}.s3.amazonaws.com
+              Id: ReactApp
+              CustomOriginConfig:
+                  HTTPPort: 80
+                  HTTPSPort: 443
+                  OriginProtocolPolicy: https-only 
+          Enabled: true
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - PUT
+            TargetOriginId: ReactApp
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+      
+          
+
+
+  
       
       
      
