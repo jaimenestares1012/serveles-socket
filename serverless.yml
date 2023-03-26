@@ -9,6 +9,7 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
+    signupTableName: ${self:custom.signupTableName}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -46,6 +47,20 @@ functions:
           path: create-player-score/{ID}
           method: post
           cors: true
+  UpdatePlayerScore:
+    handler: lambdas/endpoints/updatePlayersScores.handler
+    events:
+      - http:
+          path: update-player-score/{ID}
+          method: PUT
+          cors: true
+  getGameScores:
+    handler: lambdas/endpoints/getGameScores.handler
+    events:
+      - http:
+          path: get-game-score/{game}
+          method: GET
+          cors: true
   createFile:
     handler: lambdas/endpoints/createFile.handler
     events:
@@ -78,6 +93,13 @@ functions:
           path: send-email
           method: POST
           cors: true
+  addSignup:
+    handler: lambdas/stepFunctionsLambdas/addSignup.handler
+  getSignup:
+    handler: lambdas/stepFunctionsLambdas/getSignup.handler
+  sendReminderEmail:
+    handler: lambdas/stepFunctionsLambdas/sendReminderEmail.handler
+
       
 
 
@@ -87,16 +109,31 @@ functions:
 plugins:
   - serverless-s3-sync
   - serverless-webpack
+  - serverless-step-functions
 
 package:
   individually: true
 
 custom:
   tableName: player-points
+  signupTableName: signup-table-name
   bucketName: jaimebucketjdewdiwjsiwjsjwisjwi
   s3Sync:
     - bucketName: ${self:custom.bucketName}
       localDir: UploadData
+
+
+stepFunctions:
+  validate: true
+  stateMachines:
+    reminderEmail:
+      name: reminderEmail
+      eventes:
+        - http:
+            path: sign-with-reminders
+            method: post
+            cors: true
+      definition: ${file(./stepFunction.yml)}
 
 
 resources:
@@ -112,10 +149,33 @@ resources:
         AttributeDefinitions:
           - AttributeName: ID
             AttributeType: S
+          - AttributeName: game
+            AttributeType: S
         KeySchema:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+
+        GlobalSecondaryIndexes:
+          - IndexName: game-index
+            KeySchema:
+              - AttributeName: game
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    MyEmailSignupTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.signupTableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+                
     myAssumeRole:
       Type: AWS::IAM::Role
       Properties:

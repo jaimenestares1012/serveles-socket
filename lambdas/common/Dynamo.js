@@ -42,7 +42,31 @@ const Dynamo = {
         }
 
         return  documentClient.delete(params).promise()
+    },
+    update: async ({tableName, primaryKey,primaryKeyValue , updateKey, updateValue}) =>{
+        const params ={
+            TableName: tableName,
+            Key:{[primaryKey]: primaryKeyValue},
+            UpdateExpression: `set ${updateKey} = :updateValue`,
+            ExpressionAttributeValues:{
+                ':updateValue': updateValue
+            }
+        }
+        return documentClient.update(params).promise()
+    },
+    query: async ({tableName, index, queryKey, queryValue}) =>{
+        const params = {
+            TableName: tableName,
+            IndexName: index,
+            KeyConditionExpression: `${queryKey} = :hkey`,
+            ExpressionAttributeValues:{
+                ':hkey': queryValue
+            }
+        }
+        console.log("params-------->", params);
+        const res  = await documentClient.query(params).promise()
+        return res.Items || []
     }
-} 
+ } 
 
 module.exports = Dynamo
