@@ -5,26 +5,26 @@ States:
     Type: Task
     Resource: arn:aws:states:::lambda:invoke
     Parameters:
-      FunctionName: {"Fn::Join": [":", ["arn:aws:lambda:eu-west-1", {"Ref": "AWS::AcountId"}, "function:${self:service}-${self:provider.state}-addSignup"]]}
+      FunctionName: { "Fn::Join": [ ":", ["arn:aws:lambda:us-east-1", { "Ref": "AWS::AccountId" }, "function:${self:service}-${self:provider.stage}-addSignup"]]}
       Payload:
-        Input.$: "$"
+        Input.$: '$'
     Next: wait for 24hr
   wait for 24hr:
     Type: Wait
-    Seconds: 86400
+    Seconds: 20
     Next: Read DB
   Read DB:
     Type: Task
     Resource: arn:aws:states:::lambda:invoke
     Parameters:
-      FunctionName: {"Fn::Join": [":", ["arn:aws:lambda:eu-west-1", {"Ref": "AWS::AcountId"}, "function:${self:service}-${self:provider.state}-getSignup"]]}
+      FunctionName: { "Fn::Join": [ ":", ["arn:aws:lambda:us-east-1", { "Ref": "AWS::AccountId" }, "function:${self:service}-${self:provider.stage}-getSignup"]]}
       Payload:
-        Input.$: "$"
+        Input.$: '$'
     Next: has played
   has played:
     Type: Choice
     Choices:
-    - Variable: "$.Payload.played"
+    - Variable: '$.Payload.played'
       StringEquals: 'true'
       Next: close
     Default: send reminder email
@@ -32,9 +32,9 @@ States:
     Type: Task
     Resource: arn:aws:states:::lambda:invoke
     Parameters:
-      FunctionName: {"Fn::Join": [":", ["arn:aws:lambda:eu-west-1", {"Ref": "AWS::AcountId"}, "function:${self:service}-${self:provider.state}-sendReminderEmail"]]}
+      FunctionName: { "Fn::Join": [ ":", ["arn:aws:lambda:us-east-1", { "Ref": "AWS::AccountId" }, "function:${self:service}-${self:provider.stage}-sendReminderEmail"]]}
       Payload:
-        Input.$: "$"
+        Input.$: '$'
     Next: close
   close:
     Type: Succeed

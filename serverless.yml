@@ -6,6 +6,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: dev
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
@@ -17,12 +18,12 @@ provider:
         - s3:*
         - ses:*
       Resource: '*'
-  apiGateway:
-    apiKeys:
-      - name: MyFreeApiKey
-        value: Lc9XtRmZ8OaJzKvS2q0F
-      - name: MyPaidApiKey
-        value: hY4sDpGnT3iXbM6oWfEj
+  # apiGateway:
+  #   apiKeys:
+  #     - name: MyFreeApiKey
+  #       value: Lc9XtRmZ8OaJzKvS2q0F
+  #     - name: MyPaidApiKey
+  #       value: hY4sDpGnT3iXbM6oWfEj
 
 functions:
   getUser:
@@ -128,7 +129,7 @@ stepFunctions:
   stateMachines:
     reminderEmail:
       name: reminderEmail
-      eventes:
+      events:
         - http:
             path: sign-with-reminders
             method: post
