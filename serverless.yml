@@ -17,6 +17,7 @@ provider:
         - dynamodb:*
         - s3:*
         - ses:*
+        - lex:*
       Resource: '*'
   # apiGateway:
   #   apiKeys:
@@ -100,6 +101,13 @@ functions:
     handler: lambdas/stepFunctionsLambdas/getSignup.handler
   sendReminderEmail:
     handler: lambdas/stepFunctionsLambdas/sendReminderEmail.handler
+  telegramToLex:
+    handler: lambdas/endpoints/telegramToLex.handler
+    events:
+      - http:
+          path: telegram-webhook
+          method: POST
+          cors: true
 
       
 
