@@ -29,74 +29,74 @@ provider:
   #       value: hY4sDpGnT3iXbM6oWfEj
 
 functions:
-  getUser:
-    handler: lambdas/endpoints/getUser.handler
-    events:
-      - http:
-          path: get-user/{ID}
-          method: GET
-          cors: true
-          private: true
-  getPlayerScore:
-    handler: lambdas/endpoints/getPlayerScore.handler
-    events:
-      - http:
-          path: get-player-score/{ID}
-          method: GET
-          cors: true
-  createPlayerScore:
-    handler: lambdas/endpoints/createPlayerScore.handler
-    events:
-      - http:
-          path: create-player-score/{ID}
-          method: post
-          cors: true
-  UpdatePlayerScore:
-    handler: lambdas/endpoints/updatePlayersScores.handler
-    events:
-      - http:
-          path: update-player-score/{ID}
-          method: PUT
-          cors: true
-  getGameScores:
-    handler: lambdas/endpoints/getGameScores.handler
-    events:
-      - http:
-          path: get-game-score/{game}
-          method: GET
-          cors: true
-  createFile:
-    handler: lambdas/endpoints/createFile.handler
-    events:
-      - http:
-          path: create-file/{fileName}
-          method: POST
-          cors: true
-  getFile:
-    handler: lambdas/endpoints/getFile.handler
-    events:
-      - http:
-          path: get-file/{fileName}
-          method: GET
-          cors: true
-  pproxy:
-    handler: lambdas/endpoints/proxy.handler
-    events:
-      - http:
-          path: chuck-norris/{proxy+}
-          method: ANY
-          integration: lambda-proxy
-          request:
-            parameters:
-              paths:
-                proxy: true
-  sendEmail:
-    handler: lambdas/endpoints/sendEmail.handler
-    events:
-      - http:
-          path: send-email
-          method: POST
-          cors: true
+  # getUser:
+  #   handler: lambdas/endpoints/getUser.handler
+  #   events:
+  #     - http:
+  #         path: get-user/{ID}
+  #         method: GET
+  #         cors: true
+  #         private: true
+  # getPlayerScore:
+  #   handler: lambdas/endpoints/getPlayerScore.handler
+  #   events:
+  #     - http:
+  #         path: get-player-score/{ID}
+  #         method: GET
+  #         cors: true
+  # createPlayerScore:
+  #   handler: lambdas/endpoints/createPlayerScore.handler
+  #   events:
+  #     - http:
+  #         path: create-player-score/{ID}
+  #         method: post
+  #         cors: true
+  # UpdatePlayerScore:
+  #   handler: lambdas/endpoints/updatePlayersScores.handler
+  #   events:
+  #     - http:
+  #         path: update-player-score/{ID}
+  #         method: PUT
+  #         cors: true
+  # getGameScores:
+  #   handler: lambdas/endpoints/getGameScores.handler
+  #   events:
+  #     - http:
+  #         path: get-game-score/{game}
+  #         method: GET
+  #         cors: true
+  # createFile:
+  #   handler: lambdas/endpoints/createFile.handler
+  #   events:
+  #     - http:
+  #         path: create-file/{fileName}
+  #         method: POST
+  #         cors: true
+  # getFile:
+  #   handler: lambdas/endpoints/getFile.handler
+  #   events:
+  #     - http:
+  #         path: get-file/{fileName}
+  #         method: GET
+  #         cors: true
+  # pproxy:
+  #   handler: lambdas/endpoints/proxy.handler
+  #   events:
+  #     - http:
+  #         path: chuck-norris/{proxy+}
+  #         method: ANY
+  #         integration: lambda-proxy
+  #         request:
+  #           parameters:
+  #             paths:
+  #               proxy: true
+  # sendEmail:
+  #   handler: lambdas/endpoints/sendEmail.handler
+  #   events:
+  #     - http:
+  #         path: send-email
+  #         method: POST
+  #         cors: true
   imageUpload:
     handler: lambdas/endpoints/imageUpload.handler
     events:
@@ -104,12 +104,12 @@ functions:
           path: image-upload
           method: POST
           cors: true
-  addSignup:
-    handler: lambdas/stepFunctionsLambdas/addSignup.handler
-  getSignup:
-    handler: lambdas/stepFunctionsLambdas/getSignup.handler
-  sendReminderEmail:
-    handler: lambdas/stepFunctionsLambdas/sendReminderEmail.handler
+  # addSignup:
+  #   handler: lambdas/stepFunctionsLambdas/addSignup.handler
+  # getSignup:
+  #   handler: lambdas/stepFunctionsLambdas/getSignup.handler
+  # sendReminderEmail:
+  #   handler: lambdas/stepFunctionsLambdas/sendReminderEmail.handler
 
       
 
@@ -128,7 +128,7 @@ package:
 custom:
   tableName: player-points
   signupTableName: signup-table-name
-  bucketName: jaimebucketjdewdiwjsiwjsjwisjwi
+  bucketName: jaimebucketjdewdiwjsiwjsjw333isjwi
   imageUploadBucket: myimageuploadbucketraimr
   region: eu-west-1
   s3Sync:
@@ -193,19 +193,4 @@ resources:
           - AttributeName: ID
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-                
-    myAssumeRole:
-      Type: AWS::IAM::Role
-      Properties:
-        RoleName: MyAssumeRole
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-                  - apigateway.amazonaws.com  
-              Action:
-                - sts:AssumeRole
 
