@@ -6,11 +6,14 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs12.x
+  region: eu-west-1
   stage: dev
   environment:
     tableName: ${self:custom.tableName}
     bucketName: ${self:custom.bucketName}
+    imageUploadBucket: ${self:custom.imageUploadBucket}
     signupTableName: ${self:custom.signupTableName}
+    region: ${self:custom.region}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -94,6 +97,13 @@ functions:
           path: send-email
           method: POST
           cors: true
+  imageUpload:
+    handler: lambdas/endpoints/imageUpload.handler
+    events:
+      - http:
+          path: image-upload
+          method: POST
+          cors: true
   addSignup:
     handler: lambdas/stepFunctionsLambdas/addSignup.handler
   getSignup:
@@ -119,6 +129,8 @@ custom:
   tableName: player-points
   signupTableName: signup-table-name
   bucketName: jaimebucketjdewdiwjsiwjsjwisjwi
+  imageUploadBucket: myimageuploadbucketraimr
+  region: eu-west-1
   s3Sync:
     - bucketName: ${self:custom.bucketName}
       localDir: UploadData
@@ -143,7 +155,12 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.bucketName}
-    MyDynamoDbTable:
+    ImageUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageUploadBucket}
+        AccessControl: PublicRead
+    MyDynamoDbTable: 
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.tableName}
